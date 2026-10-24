@@ -1,0 +1,405 @@
+<!doctype html>
+<html lang="ar" dir="rtl" class="is-locked">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>For My Lola</title>
+  <meta name="theme-color" content="#FBF4EA">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Aref+Ruqaa:wght@400;700&family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <!-- ============ SVG sprite: roses, blossoms, hearts, gradients ============ -->
+  <svg class="sprite" aria-hidden="true" focusable="false">
+    <defs>
+      <linearGradient id="roseGrad" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0" stop-color="#A8283F"/>
+        <stop offset="1" stop-color="#5A0F1C"/>
+      </linearGradient>
+      <linearGradient id="petal1" x1="0" y1="1" x2="0" y2="0">
+        <stop offset="0" stop-color="#4A0B16"/>
+        <stop offset="1" stop-color="#A8283F"/>
+      </linearGradient>
+      <linearGradient id="petal2" x1="0" y1="1" x2="0" y2="0">
+        <stop offset="0" stop-color="#5A0F1C"/>
+        <stop offset="1" stop-color="#C2546B"/>
+      </linearGradient>
+      <linearGradient id="petal3" x1="0" y1="1" x2="0" y2="0">
+        <stop offset="0" stop-color="#3E0912"/>
+        <stop offset="1" stop-color="#8E1F33"/>
+      </linearGradient>
+    </defs>
+
+    <symbol id="rose" viewBox="0 0 100 140">
+      <path d="M50 74 C49 95 52 115 50 138" fill="none" stroke="#5E7A4F" stroke-width="2.6" stroke-linecap="round"/>
+      <path d="M50 102 C40 92 28 94 22 103 C32 110 43 109 50 102Z" fill="#6F8C5E"/>
+      <path d="M51 120 C61 111 72 112 78 119 C69 126 58 126 51 120Z" fill="#5E7A4F"/>
+      <path d="M50 72 C44 74 38 80 36 84 C42 82 46 79 50 76 C54 79 58 82 64 84 C62 80 56 74 50 72Z" fill="#5E7A4F"/>
+      <path d="M50 22 C28 20 16 38 22 54 C27 68 40 75 50 75 C60 75 73 68 78 54 C84 38 72 20 50 22Z" fill="url(#roseGrad)"/>
+      <path d="M22 50 C24 66 38 76 52 74 C40 70 30 60 30 44 C26 44 23 46 22 50Z" fill="#7A1628"/>
+      <path d="M78 50 C76 66 62 76 48 74 C60 70 70 60 70 44 C74 44 77 46 78 50Z" fill="#6A1222"/>
+      <path d="M32 34 C38 26 62 26 68 34 C62 40 38 40 32 34Z" fill="#4A0B16" opacity=".55"/>
+      <path d="M50 30 C40 30 35 38 38 46 C41 53 50 55 55 51 C60 47 58 40 52 39 C47 38 45 43 48 46" fill="none" stroke="#C2546B" stroke-width="1.6" stroke-linecap="round"/>
+      <path d="M30 40 C36 52 44 56 50 56 C56 56 64 52 70 40" fill="none" stroke="#C2546B" stroke-width="1.2" opacity=".7"/>
+    </symbol>
+
+    <symbol id="blossom" viewBox="-10 -10 20 20">
+      <g fill="currentColor">
+        <circle cx="0" cy="-4.6" r="4"/><circle cx="4.4" cy="-1.4" r="4"/><circle cx="2.7" cy="3.7" r="4"/>
+        <circle cx="-2.7" cy="3.7" r="4"/><circle cx="-4.4" cy="-1.4" r="4"/>
+      </g>
+      <circle r="2.2" fill="#B8925A"/>
+    </symbol>
+
+    <symbol id="heart" viewBox="0 0 24 24">
+      <path fill="currentColor" d="M12 21s-7.5-4.6-10-9.3C.4 8.4 2.2 4.5 6 4.1c2.3-.2 4.1 1.1 6 3.2 1.9-2.1 3.7-3.4 6-3.2 3.8.4 5.6 4.3 4 7.6C19.5 16.4 12 21 12 21z"/>
+    </symbol>
+
+    <symbol id="sprig" viewBox="0 0 160 40">
+      <path d="M4 22 C40 16 80 26 156 18" fill="none" stroke="#6F8C5E" stroke-width="1.4" stroke-linecap="round"/>
+      <path d="M40 19 C46 10 54 9 58 12 C54 18 47 20 40 19Z M96 22 C102 30 110 31 114 28 C110 22 103 21 96 22Z M70 21 C74 13 81 12 84 14 C81 20 75 22 70 21Z" fill="#6F8C5E"/>
+    </symbol>
+  </svg>
+
+  <!-- ============ Fixed UI ============ -->
+  <canvas id="petals" aria-hidden="true"></canvas>
+  <div class="progress" aria-hidden="true"><span></span></div>
+
+  <button class="music" id="musicBtn" aria-label="شغّلي أو وقّفي أغنيتنا" aria-pressed="false">
+    <span></span><span></span><span></span><span></span>
+  </button>
+  <audio id="song" src="song/adele%20-%20lovesong%20(slowed%20%26%20reverb).mp3" loop preload="auto"></audio>
+
+  <!-- ============ Gate (needs one tap so the song can play) ============ -->
+  <div class="gate" id="gate">
+    <div class="gate__content">
+      <svg class="gate__rose" viewBox="-60 -60 120 120" aria-hidden="true"><g class="bloom" id="gateBloom"></g></svg>
+      <p class="gate__kicker">حكاية صغيرة… معمولة عشانك إنتي بس</p>
+      <p class="gate__name">يا <span data-name>آلاء</span></p>
+      <button class="gate__btn" id="openBtn">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><use href="#heart"/></svg>
+        افتحيها بحب
+      </button>
+      <p class="gate__hint">علّي الصوت… وانزلي بالراحة</p>
+    </div>
+  </div>
+
+  <!-- ============ Cinematic intro ============ -->
+  <div class="intro" id="intro" aria-live="polite">
+    <p class="intro__line">قبل أي حاجة…</p>
+    <p class="intro__line">عايز أحكيلك حكاية</p>
+    <p class="intro__line">أحلى حكاية أعرفها…</p>
+    <p class="intro__line">عشان هي عنك <em>إنتي</em></p>
+    <p class="intro__skip">دوسي عشان تعدّي</p>
+  </div>
+  <div class="curtain curtain--l" aria-hidden="true"></div>
+  <div class="curtain curtain--r" aria-hidden="true"></div>
+
+  <main>
+
+    <!-- ============ HERO ============ -->
+    <section class="hero" data-scene="hero">
+      <div class="hero__rose-wrap hero__rose-wrap--tl"><svg class="hero__rose" viewBox="0 0 100 140"><use href="#rose"/></svg></div>
+      <div class="hero__rose-wrap hero__rose-wrap--tr"><svg class="hero__rose" viewBox="0 0 100 140"><use href="#rose"/></svg></div>
+      <div class="hero__rose-wrap hero__rose-wrap--bl"><svg class="hero__rose" viewBox="0 0 100 140"><use href="#rose"/></svg></div>
+      <div class="hero__rose-wrap hero__rose-wrap--br"><svg class="hero__rose" viewBox="0 0 100 140"><use href="#rose"/></svg></div>
+
+      <div class="hero__inner">
+        <p class="hero__kicker">الحكاية كلها بتقول حاجة واحدة</p>
+        <h1 class="hero__title">
+          <span class="ln"><span class="li">بحبك</span></span>
+          <span class="ln"><span class="li">يا <em data-name>آلاء</em></span></span>
+        </h1>
+        <p class="hero__name">وهفضل أحبك لآخر يوم في عمري</p>
+      </div>
+      <div class="scroll-hint">
+        <span>انزلي بالراحة… كأنك بتقري جواب</span>
+        <i></i>
+      </div>
+    </section>
+
+    <!-- ============ CHAPTER I ============ -->
+    <section class="chapter" data-scene="chapter1">
+      <svg class="float-blossom" style="top:12%;left:6%" data-speed="0.6"><use href="#blossom"/></svg>
+      <svg class="float-blossom float-blossom--lg" style="bottom:10%;right:8%" data-speed="-0.4"><use href="#blossom"/></svg>
+
+      <header class="chapter-head">
+        <span class="chapter-num" data-reveal>الفصل الأول</span>
+        <h2 class="chapter-title" data-split>من هنا ابتدت الحكاية</h2>
+        <div class="divider" data-reveal><span></span><svg viewBox="0 0 100 140"><use href="#rose"/></svg><span></span></div>
+      </header>
+
+      <div class="story">
+        <div class="frame-wrap frame-wrap--wide">
+          <div class="frame frame--wide" data-frame>
+            <img src="imgs/IMG-20260523-WA0013.jpg" alt="إحنا الاتنين بنضحك تحت الشجر">
+          </div>
+          <span class="frame-date">مايو ٢٠٢٦</span>
+        </div>
+        <div class="story__text">
+          <p class="lead" data-split>أبتدت من اول يوم شوفتك فيها</p>
+          <p data-reveal>وكأن ربنا قدملي هدية من السما وخلاني أحبك.</p>
+          <p class="ar-quote" data-reveal>كان كل يوم يعدي بحبك أكتر.</p>
+          <p class="quote" data-reveal>وده اللي خلاني اخد الخطوة وياكي.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ YOU ARE MY… ============ -->
+    <section class="swap" data-scene="swap">
+      <div class="swap__inner">
+        <p class="swap__lead">إنتي</p>
+        <div class="swap__words">
+          <span>بيتي</span><span>راحتي</span><span>دعوتي اللي اتستجابت</span><span>مكاني المفضّل</span><span>عمري كله</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ CHAPTER II — engagement ============ -->
+    <section class="chapter chapter--promise" data-scene="chapter2">
+      <svg class="float-blossom" style="top:8%;right:10%" data-speed="0.5"><use href="#blossom"/></svg>
+
+      <header class="chapter-head">
+        <span class="chapter-num" data-reveal>الفصل التاني</span>
+        <h2 class="chapter-title" data-split>اليوم اللي قولتي فيه آه</h2>
+        <div class="divider" data-reveal><span></span><svg viewBox="0 0 100 140"><use href="#rose"/></svg><span></span></div>
+      </header>
+
+      <div class="collage">
+        <figure class="collage__item collage__item--side" data-speed="0.35">
+          <div class="frame frame--soft" data-frame style="aspect-ratio:3/4">
+            <img src="imgs/IMG-20260627-WA0014.jpg" alt="بنوري دبلنا" style="object-position:50% 50%">
+          </div>
+          <figcaption>دبلتين</figcaption>
+        </figure>
+        <figure class="collage__item collage__item--main">
+          <div class="frame-wrap">
+            <div class="frame frame--arch" data-frame>
+              <img src="imgs/IMG-20260627-WA0013.jpg" alt="إنتي مخبية ضحكتك ورا الدبلة" style="object-position:50% 35%">
+            </div>
+            <span class="frame-date">يونيو ٢٠٢٦</span>
+          </div>
+        </figure>
+        <figure class="collage__item collage__item--side collage__item--low" data-speed="-0.35">
+          <div class="frame frame--soft" data-frame style="aspect-ratio:3/4">
+            <img src="imgs/IMG-20260627-WA0020.jpg" alt="إيدينا والدبل والبوكيه" style="object-position:60% 50%">
+          </div>
+          <figcaption>ووعد واحد</figcaption>
+        </figure>
+      </div>
+
+      <div class="promise-text">
+        <p class="lead" data-split>دبلتين، ووعد واحد… وقلب أخيراً عرف مكانه فين.</p>
+        <div class="verse" data-reveal>
+          <p class="verse__ar">﴿ وَجَعَلَ بَيْنَكُم مَّوَدَّةً وَرَحْمَةً ﴾</p>
+          <cite>سورة الروم — ٢١</cite>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ CHAPTER III — horizontal moments ============ -->
+    <section class="moments" data-scene="moments">
+      <div class="moments__track">
+        <div class="m-card m-card--intro">
+          <span class="chapter-num">الفصل التالت</span>
+          <h2 class="chapter-title">لحظاتنا الصغيرة</h2>
+          <p>مش لازم يكون يوم مميز… أي وقت بقضيه معاكي بيبقى حلو، وبيفضل في بالي.</p>
+          <span class="m-arrow">كمّلي &larr;</span>
+        </div>
+
+        <figure class="polaroid" style="--r:3deg">
+          <div class="polaroid__img"><img src="imgs/IMG-20260809-WA0000.jpg" alt="إحنا في العربية" style="object-position:55% 30%"></div>
+          <figcaption>أي مشوار معاكي بيعدّي بسرعة <span>أغسطس ٢٠٢٦</span></figcaption>
+        </figure>
+
+        <div class="m-card m-card--quote">
+          <svg viewBox="0 0 100 140" class="m-rose"><use href="#rose"/></svg>
+          <p class="quote">مش مهم إحنا رايحين فين… المهم إننا مع بعض.</p>
+        </div>
+
+        <figure class="polaroid" style="--r:-2.5deg">
+          <div class="polaroid__img"><img src="imgs/IMG-20260823-WA0055.jpg" alt="إحنا في المتحف" style="object-position:60% 22%"></div>
+          <figcaption>يوم المتحف… انتي احلى قطعة فنية خلقها ربنا <span>أغسطس ٢٠٢٦</span></figcaption>
+        </figure>
+
+        <div class="m-card m-card--ar">
+          <p class="big-ar">معاكي…<br>حتى الأيام العادية بتبقى حلوة</p>
+          <p class="en-sub">وكل يوم بحبك أكتر من اللي قبله.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ CHAPTER IV — her beauty ============ -->
+    <section class="beauty" data-scene="beauty">
+      <div class="beauty__head">
+        <span class="chapter-num">الفصل الرابع</span>
+        <p class="beauty__title">إنتي حلوة أوي…<br><em>بجد</em></p>
+      </div>
+      <div class="beauty__frame-wrap">
+        <div class="beauty__frame">
+          <img src="imgs/IMG-20260906-WA0001.jpg" alt="إنتي، حلوة تحت أنوار البلد">
+        </div>
+      </div>
+      <div class="beauty__text">
+        <p class="beauty__quote">كل مرة ببصلك فيها، بستغرب إزاي حد يبقى حلو كده… وبفرح إنك ليّا.</p>
+        <p class="beauty__ar">وشّك جنًة صغيرة… وأنا تايه فيها</p>
+      </div>
+    </section>
+
+    <!-- ============ INTERLUDE ============ -->
+    <section class="interlude" data-scene="interlude">
+      <div class="interlude__rose interlude__rose--l" data-speed="0.3"><svg viewBox="0 0 100 140"><use href="#rose"/></svg></div>
+      <div class="interlude__rose interlude__rose--r" data-speed="-0.3"><svg viewBox="0 0 100 140"><use href="#rose"/></svg></div>
+
+      <blockquote class="interlude__quote">
+        <p data-split>بحبك من غير ما أعرف إزاي، ولا إمتى، ولا منين.</p>
+        <p class="sub" data-reveal>بحبك ببساطة… من غير تعقيد ولا كِبر.</p>
+        <cite data-reveal>— بابلو نيرودا</cite>
+      </blockquote>
+
+      <div class="divider" data-reveal><span></span><svg viewBox="0 0 160 40" style="width:120px"><use href="#sprig"/></svg><span></span></div>
+
+      <blockquote class="interlude__quote interlude__quote--ar">
+        <p data-reveal>أنا مش بحب الذكريات…<br>أنا بحب الذكريات اللي إنتي فيها</p>
+      </blockquote>
+    </section>
+
+    <!-- ============ CHAPTER V — reasons ============ -->
+    <section class="reasons" data-scene="reasons">
+      <div class="reasons__head">
+        <span class="chapter-num">الفصل الخامس</span>
+        <h2 class="chapter-title">بحبك ليه؟</h2>
+        <p class="chapter-ar">وهو فيه حد يقدر ميحبكيش؟</p>
+      </div>
+      <div class="reasons__stack">
+        <article class="reason">
+          <span class="reason__n">01</span>
+          <h3>ضحكتك</h3>
+          <p>قلبي بيفرح لما بيسمعها… وأختارها عن أي لحن في الدنيا.</p>
+        </article>
+        <article class="reason reason--dark">
+          <span class="reason__n">02</span>
+          <h3>نظرتك ليّا</h3>
+          <p>بتحسسني إني كفاية… وبتخليني عايز أبقى أحسن.</p>
+        </article>
+        <article class="reason">
+          <span class="reason__n">03</span>
+          <h3>قلبك</h3>
+          <p>طيب وجدع، وحنين… حتى لما الدنيا تبقى معندة.</p>
+        </article>
+        <article class="reason reason--blush">
+          <span class="reason__n">04</span>
+          <h3>الأيام العادية</h3>
+          <p>معاكي أي يوم عادي بيبقى عيد.</p>
+        </article>
+        <article class="reason">
+          <span class="reason__n">05</span>
+          <h3>عينيكي</h3>
+          <p>بتوه فيهم كل مرة… ومش عايز أرجع.</p>
+        </article>
+        <article class="reason reason--dark">
+          <span class="reason__n">06</span>
+          <h3>عشان إنتي</h3>
+          <p>ده السبب كله… وهيفضل كفاية لآخر العمر.</p>
+        </article>
+      </div>
+    </section>
+
+    <!-- ============ CHAPTER VI — the letter ============ -->
+    <section class="letter" data-scene="letter">
+      <header class="chapter-head">
+        <span class="chapter-num" data-reveal>الفصل السادس</span>
+        <h2 class="chapter-title" data-split>جواب ليكي</h2>
+      </header>
+
+      <div class="letter__paper" data-reveal>
+        <div class="letter__seal"><svg viewBox="0 0 24 24"><use href="#heart"/></svg></div>
+        <svg class="letter__sprig" viewBox="0 0 100 140"><use href="#rose"/></svg>
+
+        <div class="letter__body">
+          <p class="letter__hello">حبيبتي <span data-name>آلاء</span>،</p>
+          <p>عملتلك ده عشان بحبك… وفيه مشاعر أكبر من إنها تتقال بالكلام بس. فحبيت أديكي حاجة متتمسكش بالإيد، بس تفضل معاكي على طول.</p>
+          <p>شكراً إنك اختارتيني — في الأيام الحلوة والأيام الصعبة. شكراً على صبرك، وضحكتك، ودعواتك، وعلى إنك بتخليني عايز أبقى راجل أحسن.</p>
+          <p>مش عارف بكرة شايلّنا إيه، بس عارف كويس أوي مين اللي عايزه جنبي في كل حاجة فيه… إنتي.</p>
+          <p>وبوعدك كل يوم أحبك أكتر، وأحضنك أطول، وأفكّرك قد إيه أنا محظوظ إنك ليّا.</p>
+          <p>إنتي نور أيامي، وضحكة قلبي، وأحلى حاجة ربنا كتبهالي… ودنيتي كلها. وهفضل عمري كله أثبتلك ده.</p>
+        </div>
+
+        <p class="letter__sign"><span data-signature>حبيبك للأبد، يوسف</span> <svg viewBox="0 0 24 24"><use href="#heart"/></svg></p>
+      </div>
+    </section>
+
+    <!-- ============ CHAPTER VII — always you (us as kids) ============ -->
+    <section class="always" data-scene="always">
+      <div class="always__head">
+        <span class="chapter-num">الفصل السابع</span>
+        <h2 class="chapter-title">إنتي طول عمري</h2>
+        <p class="chapter-ar">من زمان… ولحد آخر العمر</p>
+      </div>
+      <div class="always__body">
+        <figure class="always__photo">
+          <img src="imgs/1779299380184.png" alt="إحنا الاتنين وإحنا صغيرين حاضنين بعض">
+        </figure>
+        <ol class="always__lines">
+          <li class="always__line">
+            <span class="always__when">زمان</span>
+            <p class="always__big">كنتي معايا</p>
+            <p class="always__small">من وإحنا صغيرين… كأن ربنا كاتبك ليّا من الأول.</p>
+          </li>
+          <li class="always__line">
+            <span class="always__when">دلوقتي</span>
+            <p class="always__big">إنتي معايا</p>
+            <p class="always__small">وإيدك في إيدي.</p>
+          </li>
+          <li class="always__line">
+            <span class="always__when">وبكرة</span>
+            <p class="always__big">هتفضلي معايا لآخر العمر</p>
+            <p class="always__small">وهنكبر سوا… وإيدي عمرها ما هتسيب إيدك.</p>
+          </li>
+        </ol>
+      </div>
+    </section>
+
+    <!-- ============ FINALE ============ -->
+    <section class="finale" data-scene="finale">
+      <svg class="finale__rose" viewBox="0 0 200 320" aria-hidden="true">
+        <path id="finaleStem" d="M100 112 C96 160 108 210 98 250 C92 280 102 300 100 318" fill="none" stroke="#5E7A4F" stroke-width="3.5" stroke-linecap="round"/>
+        <path class="f-leaf f-leaf--l" d="M99 205 C82 186 58 188 46 204 C64 216 84 214 99 205Z" fill="#6F8C5E"/>
+        <path class="f-leaf f-leaf--r" d="M100 250 C116 232 140 234 152 248 C136 262 114 262 100 250Z" fill="#5E7A4F"/>
+        <g transform="translate(100 92) scale(1.25)"><g class="bloom" id="finaleBloom"></g></g>
+      </svg>
+
+      <p class="finale__lyric" data-reveal>«ومهما كنتي بعيدة… هفضل أحبك على طول»</p>
+      <cite class="finale__cite" data-reveal>— من أغنيتنا</cite>
+
+      <div class="wish">
+        <p class="wish-hint">حطي صباعك على قلبي…</p>
+        <button class="love-heart" id="loveHeart" aria-label="دوسي على قلبي">
+          <span class="love-heart__ring"></span>
+          <span class="love-heart__ring love-heart__ring--2"></span>
+          <svg viewBox="0 0 24 24" aria-hidden="true"><use href="#heart"/></svg>
+        </button>
+
+        <div class="wish-msg">
+          <h2>بحبك يا <em data-name>آلاء</em></h2>
+          <p class="wish-big">بكل حتة في قلبي… ولآخر نفَس فيّا</p>
+          <p>النهارده، وبكرة، وكل يوم بعد كده.</p>
+          <p class="loves">بحبك · بموت فيكي · إنتي عمري · إنتي دنيتي</p>
+          <button class="replay" id="replay">&#8635; اقري حكايتنا تاني</button>
+        </div>
+      </div>
+    </section>
+
+    <footer class="footer">
+      <p>معمول بكل حب عشانك <svg viewBox="0 0 24 24"><use href="#heart"/></svg> يوسف</p>
+    </footer>
+  </main>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>
